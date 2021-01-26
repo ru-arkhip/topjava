@@ -23,8 +23,8 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        //List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        //mealsTo.forEach(System.out::println);
+        List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsTo.forEach(System.out::println);
 
         System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
@@ -34,8 +34,9 @@ public class UserMealsUtil {
         List<UserMeal> listIndex = new ArrayList<>();
         int maxColories = 0;
         for(UserMeal user : meals){
-            LocalTime userTime = user.getDateTime().toLocalTime();
-            if(userTime.isAfter(startTime) && userTime.isBefore(endTime)){
+            //LocalTime userTime = user.getDateTime().toLocalTime();
+            //if(userTime.isAfter(startTime) && userTime.isBefore(endTime)){
+            if(TimeUtil.isBetweenHalfOpen(user.getDateTime().toLocalTime(), startTime, endTime)){
                 maxColories += user.getCalories();
                 listIndex.add(user);
             }
@@ -53,16 +54,20 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO Implement by streams
+/*
         List<UserMeal> tmpList = meals.stream()
                 .filter(user -> user.getDateTime().toLocalTime().isAfter(startTime) && user.getDateTime().toLocalTime().isBefore(endTime))
+                .collect(Collectors.toList());
+*/
+
+        List<UserMeal> tmpList = meals.stream()
+                .filter(user -> TimeUtil.isBetweenHalfOpen(user.getDateTime().toLocalTime(), startTime ,endTime))
                 .collect(Collectors.toList());
 
         int maxColories = tmpList.stream().mapToInt(UserMeal::getCalories).sum();
 
-        List<UserMealWithExcess> resultList = tmpList.stream()
+        return tmpList.stream()
                 .map(user -> new UserMealWithExcess(user.getDateTime(), user.getDescription(), user.getCalories(), maxColories > caloriesPerDay))
                 .collect(Collectors.toList());
-
-        return resultList;
     }
 }
