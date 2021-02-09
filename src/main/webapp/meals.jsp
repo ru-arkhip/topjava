@@ -39,11 +39,8 @@
     <tbody>
     <c:forEach var="meal" items="${mealsList}">
         <c:set var="mealId" value="${mealId+1}"/>
-        <c:set var="clsName" value="txtGreen"/>
-        <c:if test = "${meal.excess == true}">
-            <c:set var="clsName" value="txtRed"/>
-        </c:if>
-        <tr class="<c:out value="${clsName}"/>">
+
+        <tr class="${meal.excess ? 'txtRed' : 'txtGreen'}">
             <td>
                 <fmt:parseDate value="${ meal.dateTime }" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
                 <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${ parsedDateTime }" />
