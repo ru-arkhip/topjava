@@ -1,12 +1,24 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE,    query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id=:user_id"),
+        @NamedQuery(name = Meal.ALL_MEALS, query = "SELECT m FROM Meal m where m.user.id=:user_id order by m.id desc"),
+        @NamedQuery(name = Meal.GET,       query = "SELECT m FROM Meal m where m.id=:id and m.user.id=:user_id"),
+})
+@Entity
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
+
+    public static final String DELETE    = "Meal.delete";
+    public static final String ALL_MEALS = "Meal.getAllMeals";
+    public static final String GET       = "Meal.get";
+
+    @Column(name = "date_time")
     private LocalDateTime dateTime;
 
     private String description;
@@ -14,6 +26,7 @@ public class Meal extends AbstractBaseEntity {
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Meal() {
