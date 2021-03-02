@@ -12,7 +12,7 @@ public class TestMatcher<T> {
     }
 
     public static <T> TestMatcher<T> usingIgnoringFieldsComparator(String... fieldsToIgnore) {
-        return new TestMatcher<>(fieldsToIgnore);
+        return new TestMatcher<T>(fieldsToIgnore);
     }
 
     public void assertMatch(T actual, T expected) {
